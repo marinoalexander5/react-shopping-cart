@@ -3,18 +3,14 @@ import "./App.css";
 import NavBar from "./components/navbar";
 import Counters from "./components/counters";
 import Alert from "react-bootstrap/Alert";
+import {counters} from "./components/api";
 
-// usamos la NAVBAR de bootstrap
-// https://getbootstrap.com/docs/5.0/components/navbar/
 
 class App extends Component {
   state = {
-    counters: [
-      { id: 1, value: 0, producto: "Tomates", precio: 120, subTotal: 0 },
-      { id: 2, value: 0, producto: "Galletitas", precio: 250, subTotal: 0 },
-      { id: 3, value: 0, producto: "Lata de Atun", precio: 380, subTotal: 0 },
-      { id: 4, value: 0, producto: "Aquarius", precio: 270, subTotal: 0 },
-    ],
+    error: null,
+    loading: "LOADING ...",
+    counters: [],
     totalPrecio: 0,
     alertShow: false
   };
@@ -23,17 +19,19 @@ class App extends Component {
     console.log("app - constructor");
   }
   componentDidMount() {
-    // ajax call
-    //this.setState({ movies });
-    // ejemplo que devuelve un array vacio de props al browser
-    // constructor (props){
-    //   super(props);
-    //   console.log('app - constructor', this.props);
-    //   this.state=this.props.something;
-    //   // no podemos usar setState dentro del constructor
-    //  // this.setState();
+    // Llamada a la API simulada 
+    counters().then(
+      result => {
+        this.setState({ loading: null, error: null, counters: result.counters });
+      },
+      error => {
+        this.setState({ loading: null, error });
+      }
+    );
+    // Ocultar mensaje alerta cada vez que se renderiza el componente
     this.setState({alertShow: false})
   }
+  
   handleIncrement = (counter) => {
     const counters = [...this.state.counters];
     const index = counters.indexOf(counter);
@@ -49,27 +47,29 @@ class App extends Component {
 
     this.setState({ counters: counters, totalPrecio: total });
   };
+
   handleDelete = (counterId) => {
     const counters = this.state.counters.filter((c) => c.id !== counterId);
 
-    // Actualizar total
+    // Actualizar total //
     // Obtener subTotal del item eliminado
     const deletedItem = this.state.counters.filter(
-      (c) => c.id === counterId
-    )[0];
+      (c) => c.id === counterId)[0];
+
     // Restar subtotal de producto al total del carrito
     const total = this.state.totalPrecio - deletedItem.subTotal;
+
     this.setState({ counters: counters, totalPrecio: total });
   };
 
   handleReset = () => {
     const counters = this.state.counters.map((c) => {
+      // Resetaear cantidades
       c.value = 0;
       // Resetear subtotales
       c.subTotal = 0;
       return c;
     });
-
 
     this.setState({ counters: counters, totalPrecio: 0 });
   };
@@ -80,23 +80,26 @@ class App extends Component {
 
   render() {
     // console.log('app - rendered');
-
     return (
       <React.Fragment>
         <NavBar
           totalPrecio={this.state.totalPrecio}
           totalCounters={this.state.counters.filter((c) => c.value > 0).length}
         />
+
         {this.state.alertShow && 
         <Alert variant="success" onClose={() => this.handleAlert(false)} dismissible>
           <Alert.Heading>
             Gracias por tu compra!
           </Alert.Heading>
         </Alert>}
+
         <main className="container">
           <Counters
             counters={this.state.counters}
             alertShow={this.state.alertShow}
+            error={this.state.error}
+            loading={this.state.loading}
             onReset={this.handleReset}
             onIncrement={this.handleIncrement}
             onDelete={this.handleDelete}

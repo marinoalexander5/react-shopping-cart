@@ -4,20 +4,33 @@ import { GiTomato, GiWaterBottle } from "react-icons/gi";
 import { FaFish, FaCookie } from "react-icons/fa";
 
 // trabaja SIN ESTADO LOCAL en Counter
+const icons = [<GiTomato />, <FaCookie />, <FaFish />, <GiWaterBottle />];
+
+// Manejo de llamada a la API
+const ErrorMessage = ({ error }) => (error ? <strong>{error}</strong> : null);
+const LoadingMessage = ({ loading }) =>
+  loading ? (
+    <div className="col mt-5">
+      <em>{loading}</em>
+    </div>
+  ) : null;
 
 class Counters extends Component {
   render() {
     // console.log('counterss rendered');
-    const icons = [<GiTomato />, <FaCookie />, <FaFish />, <GiWaterBottle />];
     return (
       <div className="wrapper">
-      <div className="row font-weight-bold mb-2">
+        <div className="row font-weight-bold mb-2">
           <div className="col">Item</div>
           <div className="col">Price</div>
           <div className="col">Subtotal</div>
           <div className="col">Quantity</div>
           <div className="col-4"></div>
-      </div>
+        </div>
+
+        <ErrorMessage error={this.props.error} />
+        <LoadingMessage loading={this.props.loading} />
+
         {this.props.counters.map((counter) => (
           <Counter
             key={counter.id}
@@ -47,4 +60,5 @@ class Counters extends Component {
     );
   }
 }
+
 export default Counters;
