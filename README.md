@@ -1,3 +1,14 @@
+# Small shopping cart simulation
+
+To run:
+  - Clone repo
+  - Install dependencies:
+    - npm install react-bootstrap bootstrap@4.1.1
+    - npm install react-icons --save
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
