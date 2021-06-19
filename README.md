@@ -6,8 +6,7 @@ To run:
     - npm install react-bootstrap bootstrap@4.1.1
     - npm install react-icons --save
 
-
-
+https://user-images.githubusercontent.com/14629695/122644597-51e8c280-d0ec-11eb-853e-67314bff2889.mp4
 
 # Getting Started with Create React App
 
